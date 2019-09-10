@@ -1,0 +1,8 @@
+name: fast_gbk_tools
+version: 0.0.1
+description: A tool for fast_gbk to generate convert table.
+dependencies:
+  fast_gbk:
+    path: ../
+dev_dependencies:
+#  unittest: any
