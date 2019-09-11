@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fast_gbk/fast_gbk.dart' as fastgbk;
+import 'package:gbk2utf8/gbk2utf8.dart' as gbk2utf8;
 import 'package:dio/dio.dart';
 import 'package:gbk_codec/gbk_codec.dart';
 
@@ -22,6 +23,11 @@ main() async {
   String result2 = await getHttp(
       "http://www.newsmth.net/nForum/#!article/OurEstate/2611032",
       gbkDecoder
+  );
+
+  String result3 = await getHttp(
+      "http://www.newsmth.net/nForum/#!article/OurEstate/2611032",
+      gbk2utf8Decoder
   );
 }
 
@@ -60,5 +66,14 @@ String gbkDecoder (List<int> responseBytes, RequestOptions options,
   String result =  gbk_bytes.decode(responseBytes);
   var end = DateTime.now().millisecondsSinceEpoch;
   print("gbk.decode cost ${end - begin}ms");
+  return result;
+}
+
+String gbk2utf8Decoder (List<int> responseBytes, RequestOptions options,
+    ResponseBody responseBody) {
+  var begin = DateTime.now().millisecondsSinceEpoch;
+  String result =  gbk2utf8.gbk.decode(responseBytes);
+  var end = DateTime.now().millisecondsSinceEpoch;
+  print("gbk2utf8.gbk.decode cost ${end - begin}ms");
   return result;
 }

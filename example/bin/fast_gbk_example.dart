@@ -6,9 +6,9 @@ import 'package:fast_gbk/fast_gbk.dart';
 main() async {
   //httpSample();
   //utf8FileExample();
-  //gbkFileExample();
+  gbkFileExample();
   //utf8StreamWriteFileExample();
-  gbkStreamWriteFileExample();
+  //gbkStreamWriteFileExample();
 }
 
 void httpSample() async {
@@ -35,7 +35,7 @@ void utf8FileExample() async {
 }
 
 void gbkFileExample() async {
-  File testFile1 = File("./test/GbkFile/gbk_test_file_1.txt");
+  File testFile1 = File("../test/GbkFile/gbk_test_file_1.txt");
   var lineNumber = 1;
   var stream = testFile1.openRead();
   stream.transform(gbk.decoder)
