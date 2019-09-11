@@ -148,29 +148,167 @@ class GbkDecoder extends Converter<List<int>, String> {
     }
 
     buffer ??= StringBuffer();
+    var decoder = _GbkStreamDecoder(buffer, _allowMalformed);
+    decoder.convert(codeUnits, start, end);
+    decoder.flush(codeUnits, end);
+    return buffer.toString();
+  }
 
-    for (int index = start; index < end; index++) {
+  /// Starts a chunked conversion.
+  ///
+  /// The converter works more efficiently if the given [sink] is a
+  /// [StringConversionSink].
+  ByteConversionSink startChunkedConversion(Sink<String> sink) {
+    StringConversionSink stringSink;
+    if (sink is StringConversionSink) {
+      stringSink = sink;
+    } else {
+      stringSink = StringConversionSink.from(sink);
+    }
+
+    return _GbkConversionSink(stringSink, _allowMalformed);
+  }
+
+  // Override the base-classes bind, to provide a better type.
+  Stream<String> bind(Stream<List<int>> stream) {
+    return super.bind(stream);
+  }
+}
+
+/// Decodes GBK code units.
+///
+/// Forwards the decoded strings to the given [StringConversionSink].
+class _GbkConversionSink extends ByteConversionSink {
+  final _GbkStreamDecoder _decoder;
+  final StringConversionSink _chunkedSink;
+  final StringBuffer _buffer;
+  _GbkConversionSink(StringConversionSink sink, bool allowMalformed)
+      : this._(sink, StringBuffer(), allowMalformed);
+
+  _GbkConversionSink._(
+      this._chunkedSink, StringBuffer stringBuffer, bool allowMalformed)
+      : _decoder = _GbkStreamDecoder(stringBuffer, allowMalformed),
+        _buffer = stringBuffer;
+
+  void close() {
+    _decoder.close();
+    if (_buffer.isNotEmpty) {
+      var accumulated = _buffer.toString();
+      _buffer.clear();
+      _chunkedSink.addSlice(accumulated, 0, accumulated.length, true);
+    } else {
+      _chunkedSink.close();
+    }
+  }
+
+  void add(List<int> chunk) {
+    addSlice(chunk, 0, chunk.length, false);
+  }
+
+  void addSlice(List<int> chunk, int startIndex, int endIndex, bool isLast) {
+    _decoder.convert(chunk, startIndex, endIndex);
+    if (_buffer.isNotEmpty) {
+      var accumulated = _buffer.toString();
+      _chunkedSink.addSlice(accumulated, 0, accumulated.length, isLast);
+      _buffer.clear();
+      return;
+    }
+    if (isLast) close();
+  }
+}
+
+/// Decodes GBK.
+///
+/// The decoder handles chunked input.
+///
+/// init() -> convert -> convert -> ... -> close() -> flush()
+///
+class _GbkStreamDecoder {
+  // throw exception or not
+  final bool _allowMalformed;
+  // output of the Decoder
+  final StringSink _stringSink;
+
+  // GBK need 2 bytes, if only 1 byte received, store here.
+  int _firstByte = -1;
+
+  bool get hasPartialInput => _firstByte > -1;
+
+  _GbkStreamDecoder(this._stringSink, this._allowMalformed);
+
+  void close() {
+    flush();
+  }
+
+  /// Flushes this decoder as if closed.
+  ///
+  /// This method throws if the input was partial and the decoder was
+  /// constructed with `allowMalformed` set to `false`.
+  ///
+  /// The [source] and [offset] of the current position may be provided,
+  /// and are included in the exception if one is thrown.
+  void flush([List<int> source, int offset]) {
+    if (hasPartialInput) {
+      if (!_allowMalformed) {
+        throw FormatException(
+            "Unfinished GBK octet sequence", source, offset);
+      }
+      _stringSink.writeCharCode(unicodeReplacementCharacterRune);
+      _firstByte = -1;
+    }
+  }
+
+  void convert(List<int> codeUnits, int startIndex, int endIndex) {
+    int begin = startIndex;
+    // if _firstByte > 0, we need to finish last time's job first.
+    if (hasPartialInput) {
+      int code = ((_firstByte)<< 8) + (codeUnits[0] & 0xff);
+      int char = gbkToUtf16Map[code];
+      if (char == null && !_allowMalformed) {
+        throw FormatException(
+            "Bad GBK encoding 0x${code.toRadixString(16)}",
+            code);
+      }
+      if (char != null) {
+        _stringSink.write(String.fromCharCode(char));
+      } else {
+        _stringSink.write(String.fromCharCode(unicodeReplacementCharacterRune));
+      }
+      _firstByte = -1;
+      begin += 1;
+    }
+
+    // handle new incoming data.
+    for (int index = begin; index < endIndex; index++) {
       int code = codeUnits[index];
       if (codeUnits[index] < 0x80) {
         // ASCII,
-        buffer.writeCharCode(code);
+        _stringSink.writeCharCode(code);
       } else {
         index++;
-        //GBK need 2 bytes.
-        assert(index < codeUnits.length, "error index ${codeUnits[index - 1]}");
+        //GBK need 2 bytes. wait for more to come.
+        if (index == endIndex) {
+          _firstByte = code;
+          return;
+        }
         code = ((code)<< 8) + (codeUnits[index] & 0xff);
         int char = gbkToUtf16Map[code];
-        if (char == null) {
+        if (char == null && !_allowMalformed) {
           throw FormatException(
               "Bad GBK encoding 0x${code.toRadixString(16)}",
               code);
         }
-        buffer.write(String.fromCharCode(char));
+
+        if (char != null) {
+          _stringSink.write(String.fromCharCode(char));
+        } else {
+          _stringSink.write(String.fromCharCode(unicodeReplacementCharacterRune));
+        }
       }
     }
-    return buffer.toString();
   }
 }
+
 
 ///
 /// GBK的编码范围
