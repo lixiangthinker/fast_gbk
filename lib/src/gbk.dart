@@ -3,8 +3,9 @@ import 'dart:typed_data';
 import 'gbk_encoder_map.dart';
 import 'gbk_decoder_map.dart';
 
-/// The Unicode Replacement character `U+FFFD` (�).
-const int unicodeReplacementCharacterRune = 0xFFFD;
+/// The GBK Replacement character `U+E7B3` (). GBK 0xA7F6
+const int replacementCharacterUnicode = 0xE7B3;
+const int replacementCharacterGBK = 0xA7F6;
 
 /// The Unicode Byte Order Marker (BOM) character `U+FEFF`.
 const int unicodeBomCharacterRune = 0xFEFF;
@@ -86,23 +87,95 @@ class GbkEncoder extends Converter<String, List<int>> {
     var length = end - start;
     if (length == 0) return Uint8List(0);
 
-    Uint8List buffer = Uint8List(stringLength * 2);
+    var encoder = _GbkStreamEncoder.withBufferSize(stringLength * 2);
+    int ending = encoder.encode(string, start, end);
+    return encoder._buffer.sublist(0, ending);
+  }
 
-    List<int> source = string.codeUnits;
+  /// Starts a chunked conversion.
+  ///
+  /// The converter works more efficiently if the given [sink] is a
+  /// [ByteConversionSink].
+  StringConversionSink startChunkedConversion(Sink<List<int>> sink) {
+    return _GbkEncoderSink(
+        (sink is ByteConversionSink) ? sink : ByteConversionSink.from(sink),
+      _GbkStreamEncoder()
+    );
+  }
+
+  // Override the base-classes bind, to provide a better type.
+  Stream<List<int>> bind(Stream<String> stream) => super.bind(stream);
+}
+
+/// This class encodes Strings to UTF-8 code units (unsigned 8 bit integers).
+class _GbkStreamEncoder {
+  final Uint8List _buffer;
+
+  static const _DEFAULT_BYTE_BUFFER_SIZE = 1024;
+
+  _GbkStreamEncoder() : this.withBufferSize(_DEFAULT_BYTE_BUFFER_SIZE);
+
+  _GbkStreamEncoder.withBufferSize(int bufferSize)
+      : _buffer = _createBuffer(bufferSize);
+
+  /// Allow an implementation to pick the most efficient way of storing bytes.
+  static Uint8List _createBuffer(int size) => Uint8List(size);
+
+  int encode(String input, int start, int end) {
+    List<int> source = input.codeUnits;
     int srcIndex = 0;
     int targetIndex = 0;
 
     while (srcIndex < source.length) {
-      int gbkCode = utf16ToGBKMap[source[srcIndex]];
+      var codeUnit = source[srcIndex];
+      // ignore non-BMP String character
+      if (_isLeadSurrogate(codeUnit) || _isTailSurrogate(codeUnit)) {
+        _buffer[targetIndex++] = replacementCharacterGBK;
+        srcIndex++;
+        srcIndex++;
+        continue;
+      }
+
+      if (_isAscii(codeUnit)) {
+        _buffer[targetIndex++] = codeUnit;
+        srcIndex++;
+        continue;
+      }
+
+      int gbkCode = utf16ToGBKMap[codeUnit];
       if (gbkCode != null ) {
-        buffer[targetIndex++] = (gbkCode >> 8) & 0xff;
-        buffer[targetIndex++] = gbkCode & 0xff;
+        _buffer[targetIndex++] = (gbkCode >> 8) & 0xff;
+        _buffer[targetIndex++] = gbkCode & 0xff;
       } else {
-        buffer[targetIndex++] = source[srcIndex];
+        // unknown GBK code;
+        _buffer[targetIndex++] = replacementCharacterGBK;
       }
       srcIndex++;
     }
-    return buffer.sublist(0, targetIndex);
+    return targetIndex;
+  }
+}
+
+/// This class encodes chunked strings to GBK code units (unsigned 8-bit
+/// integers).
+/// stateless, String input, 2Bytes GBK output.
+class _GbkEncoderSink with StringConversionSinkMixin {
+  final ByteConversionSink _sink;
+  final _GbkStreamEncoder _encoder;
+
+  _GbkEncoderSink(this._sink, this._encoder);
+
+  @override
+  void close() {
+    _sink.close();
+  }
+
+  @override
+  void addSlice(String input, int start, int end, bool isLast) {
+    int index = _encoder.encode(input, start, end);
+    _sink.addSlice(_encoder._buffer, 0, index, isLast);
+
+    if (isLast) close();
   }
 }
 
@@ -281,8 +354,7 @@ class _GbkStreamDecoder {
     // handle new incoming data.
     for (int index = begin; index < endIndex; index++) {
       int code = codeUnits[index];
-      if (codeUnits[index] < 0x80) {
-        // ASCII,
+      if (_isAscii(codeUnits[index])) {
         _stringSink.writeCharCode(code);
       } else {
         index++;
@@ -324,7 +396,6 @@ class _GbkStreamDecoder {
 /// 合计：			                      23,940 21,886
 ///
 
-const int _ONE_BYTE_LIMIT = 0x7f; // 7 bits
 int _scanOneByteCharacters(List<int> units, int from, int endIndex) {
   final to = endIndex;
   for (var i = from; i < to; i++) {
@@ -333,3 +404,31 @@ int _scanOneByteCharacters(List<int> units, int from, int endIndex) {
   }
   return to - from;
 }
+
+///
+///  For a character outside the Basic Multilingual Plane (plane 0) that is
+///  composed of a surrogate pair, [runes] combines the pair and returns a
+///  single integer.  For example, the Unicode character for a
+///  musical G-clef ('𝄞') with rune value 0x1D11E consists of a UTF-16 surrogate
+///  pair: `0xD834` and `0xDD1E`. Using [codeUnits] returns the surrogate pair,
+///  and using `runes` returns their combined value:
+///
+///      var clef = '\u{1D11E}';
+///      clef.codeUnits;         // [0xD834, 0xDD1E]
+///      clef.runes.toList();    // [0x1D11E]
+///
+/// UTF-16 constants.
+/// https://zh.wikipedia.org/wiki/UTF-16
+const int _SURROGATE_TAG_MASK = 0xFC00;
+const int _SURROGATE_VALUE_MASK = 0x3FF;
+const int _LEAD_SURROGATE_MIN = 0xD800;
+const int _TAIL_SURROGATE_MIN = 0xDC00;
+
+bool _isLeadSurrogate(int codeUnit) =>
+    (codeUnit & _SURROGATE_TAG_MASK) == _LEAD_SURROGATE_MIN;
+bool _isTailSurrogate(int codeUnit) =>
+    (codeUnit & _SURROGATE_TAG_MASK) == _TAIL_SURROGATE_MIN;
+
+const int _ONE_BYTE_LIMIT = 0x7f; // 7 bits
+bool _isAscii(int codeUnit) =>
+    (codeUnit <= _ONE_BYTE_LIMIT);

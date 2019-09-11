@@ -12,3 +12,6 @@ doc/api/
 
 #igore local issue track list
 issues.md
+
+#ignore temp test file
+test/temp/

@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:fast_gbk/fast_gbk.dart';
@@ -34,36 +32,6 @@ void main() {
       testClient = client;
     });
 
-    test('decoder test, Get GBK file', () async {
-      var begin = DateTime.now().millisecondsSinceEpoch;
-
-      File testFile1 = File("./test/GbkFile/gbk_test_file_1.txt");
-      String result1 = testFile1.readAsStringSync(encoding: gbk);
-      print(result1);
-
-      File testFile2 = File("./test/GbkFile/gbk_test_file_2.txt");
-      String result2 = testFile2.readAsStringSync(encoding: gbk);
-      print(result2);
-
-      var end = DateTime.now().millisecondsSinceEpoch;
-      print("gbk.decode cost ${end - begin}ms, responseLength = ${result1.length + result2.length}");
-      expect((end - begin) < 100, true);
-    }, skip: true);
-
-    test('encoder test, Get GBK file and encode again.', () async {
-      File testFile2 = File("./test/GbkFile/gbk_test_file_2.txt");
-      String content = testFile2.readAsStringSync(encoding: gbk);
-
-      var begin = DateTime.now().millisecondsSinceEpoch;
-      Uint8List encoded = gbk.encode(content);
-      var end = DateTime.now().millisecondsSinceEpoch;
-      print("gbk.encode cost ${end - begin}ms, string length = ${content.length}");
-
-      String finalContent = gbk.decode(encoded);
-      print("final = ${finalContent.length} original = ${content.length}");
-      expect(finalContent.length == content.length, true);
-    }, skip: true);
-
     test('Get GBK Html response', () async {
       //String url = "http://www.newsmth.net/nForum/#!article/OurEstate/2611032?ajax";
       String url = "http://www.newsmth.net/";
@@ -78,7 +46,7 @@ void main() {
       HttpClientResponse response = await request.close();
       print(response.headers);
       response.listen(
-        (data) {
+            (data) {
           print("onData");
           print(data.runtimeType);
           String result = gbk.decode(data);
