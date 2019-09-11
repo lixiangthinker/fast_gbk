@@ -365,6 +365,9 @@ class _GbkStreamDecoder {
           return;
         }
         code = ((code)<< 8) + (codeUnits[index] & 0xff);
+        if (code == unicodeBomCharacterRune) {
+          continue;
+        }
         int char = gbkToUtf16Map[code];
         if (char == null && !_allowMalformed) {
           throw FormatException(
