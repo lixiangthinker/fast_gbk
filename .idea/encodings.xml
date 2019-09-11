@@ -2,5 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/test/GbkFile" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/test/temp/gbk_test_file_2.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/test/temp/gbk_utf8_test_file_2.txt" charset="GBK" />
   </component>
 </project>
