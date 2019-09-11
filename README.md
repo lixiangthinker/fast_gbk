@@ -5,6 +5,11 @@ GBK 编解码器，支持 File 和 HttpClient 的 Stream interface。用法和 u
 Created from templates made available by Stagehand under a BSD-style
 [license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
 
+## version
+> fast_gbk: 0.1.0
+
+It is a initial version, which will pub to pub.dev when it is stable enough. 
+
 ## Usage
 
 - A simple usage example:
@@ -64,6 +69,8 @@ void main() async {
   httpClient.close();
 }
 ```
+
 ## Features and bugs
 
-Please feel free to post issue or PR to this github link.
+Please feel free to post [issue](https://github.com/lixiangthinker/fast_gbk/issues) 
+or [pull request](https://github.com/lixiangthinker/fast_gbk/pulls) to this github link.
