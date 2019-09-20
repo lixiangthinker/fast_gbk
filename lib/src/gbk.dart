@@ -99,8 +99,7 @@ class GbkEncoder extends Converter<String, List<int>> {
   StringConversionSink startChunkedConversion(Sink<List<int>> sink) {
     return _GbkEncoderSink(
         (sink is ByteConversionSink) ? sink : ByteConversionSink.from(sink),
-      _GbkStreamEncoder()
-    );
+        _GbkStreamEncoder());
   }
 
   // Override the base-classes bind, to provide a better type.
@@ -143,12 +142,13 @@ class _GbkStreamEncoder {
       }
 
       int gbkCode = utf16ToGBKMap[codeUnit];
-      if (gbkCode != null ) {
+      if (gbkCode != null) {
         _buffer[targetIndex++] = (gbkCode >> 8) & 0xff;
         _buffer[targetIndex++] = gbkCode & 0xff;
       } else {
         // unknown GBK code;
-        _buffer[targetIndex++] = (replacementCharacterGBK >> 8) & 0xff;;
+        _buffer[targetIndex++] = (replacementCharacterGBK >> 8) & 0xff;
+        ;
         _buffer[targetIndex++] = replacementCharacterGBK & 0xff;
       }
       srcIndex++;
@@ -194,7 +194,7 @@ class GbkDecoder extends Converter<List<int>, String> {
   /// sequences with the Unicode Replacement character `U+FFFD` (�). Otherwise
   /// it throws a [FormatException].
   const GbkDecoder({bool allowMalformed = false})
-   : _allowMalformed = allowMalformed;
+      : _allowMalformed = allowMalformed;
 
   /// Converts the GBK [codeUnits] (a list of unsigned 8-bit integers) to the
   /// corresponding string.
@@ -256,6 +256,7 @@ class _GbkConversionSink extends ByteConversionSink {
   final _GbkStreamDecoder _decoder;
   final StringConversionSink _chunkedSink;
   final StringBuffer _buffer;
+
   _GbkConversionSink(StringConversionSink sink, bool allowMalformed)
       : this._(sink, StringBuffer(), allowMalformed);
 
@@ -300,6 +301,7 @@ class _GbkConversionSink extends ByteConversionSink {
 class _GbkStreamDecoder {
   // throw exception or not
   final bool _allowMalformed;
+
   // output of the Decoder
   final StringSink _stringSink;
 
@@ -324,8 +326,7 @@ class _GbkStreamDecoder {
   void flush([List<int> source, int offset]) {
     if (hasPartialInput) {
       if (!_allowMalformed) {
-        throw FormatException(
-            "Unfinished GBK octet sequence", source, offset);
+        throw FormatException("Unfinished GBK octet sequence", source, offset);
       }
       _stringSink.writeCharCode(unicodeReplacementCharacterRune);
       _firstByte = -1;
@@ -336,12 +337,11 @@ class _GbkStreamDecoder {
     int begin = startIndex;
     // if _firstByte > 0, we need to finish last time's job first.
     if (hasPartialInput) {
-      int code = ((_firstByte)<< 8) + (codeUnits[0] & 0xff);
+      int code = ((_firstByte) << 8) + (codeUnits[0] & 0xff);
       int char = gbkToUtf16Map[code];
       if (char == null && !_allowMalformed) {
         throw FormatException(
-            "Bad GBK encoding 0x${code.toRadixString(16)}",
-            code);
+            "Bad GBK encoding 0x${code.toRadixString(16)}", code);
       }
       if (char != null) {
         _stringSink.write(String.fromCharCode(char));
@@ -364,27 +364,26 @@ class _GbkStreamDecoder {
           _firstByte = code;
           return;
         }
-        code = ((code)<< 8) + (codeUnits[index] & 0xff);
+        code = ((code) << 8) + (codeUnits[index] & 0xff);
         if (code == unicodeBomCharacterRune) {
           continue;
         }
         int char = gbkToUtf16Map[code];
         if (char == null && !_allowMalformed) {
           throw FormatException(
-              "Bad GBK encoding 0x${code.toRadixString(16)}",
-              code);
+              "Bad GBK encoding 0x${code.toRadixString(16)}", code);
         }
 
         if (char != null) {
           _stringSink.write(String.fromCharCode(char));
         } else {
-          _stringSink.write(String.fromCharCode(unicodeReplacementCharacterRune));
+          _stringSink
+              .write(String.fromCharCode(unicodeReplacementCharacterRune));
         }
       }
     }
   }
 }
-
 
 ///
 /// GBK的编码范围
@@ -424,15 +423,15 @@ int _scanOneByteCharacters(List<int> units, int from, int endIndex) {
 /// UTF-16 constants.
 /// https://zh.wikipedia.org/wiki/UTF-16
 const int _SURROGATE_TAG_MASK = 0xFC00;
-const int _SURROGATE_VALUE_MASK = 0x3FF;
+//const int _SURROGATE_VALUE_MASK = 0x3FF;
 const int _LEAD_SURROGATE_MIN = 0xD800;
 const int _TAIL_SURROGATE_MIN = 0xDC00;
 
 bool _isLeadSurrogate(int codeUnit) =>
     (codeUnit & _SURROGATE_TAG_MASK) == _LEAD_SURROGATE_MIN;
+
 bool _isTailSurrogate(int codeUnit) =>
     (codeUnit & _SURROGATE_TAG_MASK) == _TAIL_SURROGATE_MIN;
 
 const int _ONE_BYTE_LIMIT = 0x7f; // 7 bits
-bool _isAscii(int codeUnit) =>
-    (codeUnit <= _ONE_BYTE_LIMIT);
+bool _isAscii(int codeUnit) => (codeUnit <= _ONE_BYTE_LIMIT);

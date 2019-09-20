@@ -6,7 +6,7 @@ Created from templates made available by Stagehand under a BSD-style
 [license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
 
 ## version
-> fast_gbk: 0.1.0
+> fast_gbk: 0.1.x
 
 It is a initial version, which will pub to pub.dev when it is stable enough. 
 

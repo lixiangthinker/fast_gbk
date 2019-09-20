@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:fast_gbk/fast_gbk.dart';
 
 main() async {
-  //readGbkFileAndWriteToGbkFile();
+  readGbkFileAndWriteToGbkFile();
   readUtf8FileAndWriteToGbkFile();
 }
 
