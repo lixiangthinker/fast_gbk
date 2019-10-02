@@ -70,6 +70,17 @@ void main() async {
 }
 ```
 
+## FAQ
+
+### Q: support for malformed gbk characters.
+Q: when input string contains malformed GBK characters, we do not want to received a exception.
+A: 0.1.1+1 export GbkCodec api, users can use as follows:
+```dart
+  //output a �, instead of throw a exception.
+  var codec = GbkCodec(allowMalformed: true);
+  var decodedMalform = codec.decode([20001]);
+```
+
 ## Features and bugs
 
 Please feel free to post [issue](https://github.com/lixiangthinker/fast_gbk/issues) 
