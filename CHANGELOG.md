@@ -1,3 +1,6 @@
+## 0.1.1+1
+export GbkCodec so user could create an instance of GbkCodec with allowMalformed=true
+
 ## 0.1.1
 fix pub.dev warnings.
 

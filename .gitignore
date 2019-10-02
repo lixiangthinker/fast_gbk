@@ -15,3 +15,5 @@ issues.md
 
 #ignore temp test file
 test/temp/
+
+.idea/workspace.xml

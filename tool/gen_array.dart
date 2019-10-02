@@ -24,7 +24,7 @@ void main() async {
       if (value < 0x80) return;
 
       utf16ToGBKMap[key] = value;
-      if(gbkToUtf16Map.containsKey(value)) {
+      if (gbkToUtf16Map.containsKey(value)) {
         print("{GBK, UTF-16, UTF-16}  [0x${value.toRadixString(16)}, "
             "0x${gbkToUtf16Map[value].toRadixString(16)}, "
             "0x${key.toRadixString(16)}, ${String.fromCharCode(gbkToUtf16Map[value])}, ${String.fromCharCode(key)}]");
@@ -41,7 +41,8 @@ void main() async {
   //gbk_decoder_map.dart
   File decodeMap = File("gbk_decoder_map.dart");
   if (await decodeMap.exists()) await decodeMap.delete();
-  decodeMap.writeAsStringSync("Map<int, int> gbkToUtf16Map = \n", mode: FileMode.append);
+  decodeMap.writeAsStringSync("Map<int, int> gbkToUtf16Map = \n",
+      mode: FileMode.append);
   decodeMap.writeAsStringSync("{ \n", mode: FileMode.append);
   gbkToUtf16Map.forEach((key, value) {
     decodeMap.writeAsStringSync("  $key:$value, \n", mode: FileMode.append);
@@ -51,7 +52,8 @@ void main() async {
   //gbk_encoder_map.dart
   File encoderMap = File("gbk_encoder_map.dart");
   if (await encoderMap.exists()) await encoderMap.delete();
-  encoderMap.writeAsStringSync("Map<int, int> utf16ToGBKMap = \n", mode: FileMode.append);
+  encoderMap.writeAsStringSync("Map<int, int> utf16ToGBKMap = \n",
+      mode: FileMode.append);
   encoderMap.writeAsStringSync("{ \n", mode: FileMode.append);
 
   utf16ToGBKMap.forEach((key, value) {

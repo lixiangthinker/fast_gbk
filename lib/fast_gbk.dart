@@ -11,4 +11,4 @@
 
 library fast_gbk;
 
-export 'src/gbk.dart' show gbk, GbkEncoder, GbkDecoder;
+export 'src/gbk.dart' show gbk, GbkCodec, GbkEncoder, GbkDecoder;

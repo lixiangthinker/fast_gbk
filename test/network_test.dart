@@ -10,7 +10,8 @@ void main() {
 
     setUp(() {
       String baseUrl = "http://www.newsmth.net";
-      final String defaultAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) "
+      final String defaultAgent =
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) "
           "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36";
       const int secondsUnit = 1000;
       final int connectTimeOut = 10 * secondsUnit;
@@ -43,11 +44,12 @@ void main() {
   });
 }
 
-String gbkDecoder (List<int> responseBytes, RequestOptions options,
+String gbkDecoder(List<int> responseBytes, RequestOptions options,
     ResponseBody responseBody) {
   var begin = DateTime.now().millisecondsSinceEpoch;
-  String result =  gbk.decode(responseBytes);
+  String result = gbk.decode(responseBytes);
   var end = DateTime.now().millisecondsSinceEpoch;
-  print("gbk.decode cost ${end - begin}ms, responseLength = ${responseBytes.length}");
+  print(
+      "gbk.decode cost ${end - begin}ms, responseLength = ${responseBytes.length}");
   return result;
 }

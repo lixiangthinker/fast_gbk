@@ -20,19 +20,17 @@ void readGbkFileAndWriteToGbkFile() async {
 
   var lineNumber = 1;
   var stream = gbkFile.openRead();
-  stream.transform(gbk.decoder)
-      .transform(const LineSplitter())
-      .listen((line) {
-        stdout.write('${lineNumber++} ');
-        stdout.writeln(line);
+  stream.transform(gbk.decoder).transform(const LineSplitter()).listen((line) {
+    stdout.write('${lineNumber++} ');
+    stdout.writeln(line);
 
-        sink.writeln(line);
-      }, onDone: () {
-        print("finished.");
-        sink.close();
-      }, onError: (e, s){
-        print("get error.");
-      });
+    sink.writeln(line);
+  }, onDone: () {
+    print("finished.");
+    sink.close();
+  }, onError: (e, s) {
+    print("get error.");
+  });
 }
 
 void readUtf8FileAndWriteToGbkFile() async {
@@ -47,9 +45,7 @@ void readUtf8FileAndWriteToGbkFile() async {
 
   var lineNumber = 1;
   var stream = utf8File.openRead();
-  stream.transform(utf8.decoder)
-      .transform(const LineSplitter())
-      .listen((line) {
+  stream.transform(utf8.decoder).transform(const LineSplitter()).listen((line) {
     stdout.write('${lineNumber++} ');
     stdout.writeln(line);
 
@@ -57,7 +53,7 @@ void readUtf8FileAndWriteToGbkFile() async {
   }, onDone: () {
     print("finished.");
     sink.close();
-  }, onError: (e, s){
+  }, onError: (e, s) {
     print("get error.");
   });
 }
@@ -74,9 +70,7 @@ void readUtf8FileAndWriteToGbkFile2() async {
 
   var lineNumber = 1;
   var stream = utf8File.openRead();
-  stream.transform(utf8.decoder)
-      .transform(const LineSplitter())
-      .listen((line) {
+  stream.transform(utf8.decoder).transform(const LineSplitter()).listen((line) {
     stdout.write('${lineNumber++} ');
     stdout.writeln(line);
 
@@ -84,7 +78,7 @@ void readUtf8FileAndWriteToGbkFile2() async {
   }, onDone: () {
     print("finished.");
     sink.close();
-  }, onError: (e, s){
+  }, onError: (e, s) {
     print("get error.");
   });
 }

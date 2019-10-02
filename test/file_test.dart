@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:fast_gbk/fast_gbk.dart';
@@ -6,8 +5,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('A group of decoding and encoding file tests', () {
-    setUp(() {
-    });
+    setUp(() {});
 
     test('decoder test, Get GBK file', () async {
       var begin = DateTime.now().millisecondsSinceEpoch;
@@ -21,7 +19,8 @@ void main() {
       print(result2);
 
       var end = DateTime.now().millisecondsSinceEpoch;
-      print("gbk.decode cost ${end - begin}ms, responseLength = ${result1.length + result2.length}");
+      print(
+          "gbk.decode cost ${end - begin}ms, responseLength = ${result1.length + result2.length}");
       expect((end - begin) < 100, true);
     }, skip: false);
 
@@ -32,15 +31,14 @@ void main() {
       var begin = DateTime.now().millisecondsSinceEpoch;
       Uint8List encoded = gbk.encode(content);
       var end = DateTime.now().millisecondsSinceEpoch;
-      print("gbk.encode cost ${end - begin}ms, string length = ${content.length}");
+      print(
+          "gbk.encode cost ${end - begin}ms, string length = ${content.length}");
 
       String finalContent = gbk.decode(encoded);
       print("final = ${finalContent.length} original = ${content.length}");
       expect(finalContent.length == content.length, true);
     }, skip: false);
 
-    tearDown((){
-
-    });
+    tearDown(() {});
   });
 }

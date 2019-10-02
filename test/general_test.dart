@@ -1,5 +1,6 @@
 import 'package:fast_gbk/fast_gbk.dart';
 import 'package:test/test.dart';
+
 ///
 /// Simple encode and decode test, using gbk.encode / gbk.decode
 ///
@@ -159,7 +160,6 @@ void main() {
 
     test('UTF-16 have same GBK char', () async {
       // some 'UTF-16 have same GBK char', here's the list:
-
     });
 //    gbkToUtf16Map original [65104, 11905]
 //    gbkToUtf16Map new [65104, 59413]
@@ -303,14 +303,16 @@ void printUtf16GbkPair(String string, String GbkCode) {
 
 void testOnlyPrint(String input) {
   String testString = input;
-  print("String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}");
+  print(
+      "String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}");
   List<int> encoded = gbk.encode(testString);
   print("\tGBK = [${codeUnitsToString(encoded)}");
 }
 
 void testEncode(String input, List<int> expectResult) {
   String testString = input;
-  print("String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}");
+  print(
+      "String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}");
   List<int> encoded = gbk.encode(testString);
 
   expect(encoded.length, 2);
