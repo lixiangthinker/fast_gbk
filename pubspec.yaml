@@ -1,8 +1,7 @@
 name: fast_gbk
 description: a fast gbk codec, support GBK encoding and decoding with stream api.
-version: 0.1.1+1
+version: 0.1.2
 homepage: https://github.com/lixiangthinker/fast_gbk
-author: lixiang <lixiangthinker@gmail.com>
 
 environment:
   sdk: '>=2.4.0 <3.0.0'

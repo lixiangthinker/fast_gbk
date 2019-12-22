@@ -39,9 +39,9 @@ class GbkCodec extends Encoding {
   const GbkCodec({bool allowMalformed = false})
       : _allowMalformed = allowMalformed;
 
-  /// The name of this codec, "gbk".
+  /// The name of this codec, 'gbk'.
   @override
-  String get name => "gbk";
+  String get name => 'gbk';
 
   /// Decodes the UTF-8 [codeUnits] (a list of unsigned 8-bit integers) to the
   /// corresponding string.
@@ -88,7 +88,7 @@ class GbkEncoder extends Converter<String, List<int>> {
     if (length == 0) return Uint8List(0);
 
     var encoder = _GbkStreamEncoder.withBufferSize(stringLength * 2);
-    int ending = encoder.encode(string, start, end);
+    var ending = encoder.encode(string, start, end);
     return encoder._buffer.sublist(0, ending);
   }
 
@@ -96,6 +96,7 @@ class GbkEncoder extends Converter<String, List<int>> {
   ///
   /// The converter works more efficiently if the given [sink] is a
   /// [ByteConversionSink].
+  @override
   StringConversionSink startChunkedConversion(Sink<List<int>> sink) {
     return _GbkEncoderSink(
         (sink is ByteConversionSink) ? sink : ByteConversionSink.from(sink),
@@ -103,6 +104,7 @@ class GbkEncoder extends Converter<String, List<int>> {
   }
 
   // Override the base-classes bind, to provide a better type.
+  @override
   Stream<List<int>> bind(Stream<String> stream) => super.bind(stream);
 }
 
@@ -121,7 +123,7 @@ class _GbkStreamEncoder {
   static Uint8List _createBuffer(int size) => Uint8List(size);
 
   int encode(String input, int start, int end) {
-    List<int> source = input.codeUnits;
+    var source = input.codeUnits;
     int srcIndex = 0;
     int targetIndex = 0;
 
