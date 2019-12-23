@@ -124,8 +124,8 @@ class _GbkStreamEncoder {
 
   int encode(String input, int start, int end) {
     var source = input.codeUnits;
-    int srcIndex = 0;
-    int targetIndex = 0;
+    var srcIndex = 0;
+    var targetIndex = 0;
 
     while (srcIndex < source.length) {
       var codeUnit = source[srcIndex];
@@ -143,7 +143,7 @@ class _GbkStreamEncoder {
         continue;
       }
 
-      int gbkCode = utf16ToGBKMap[codeUnit];
+      var gbkCode = utf16ToGBKMap[codeUnit];
       if (gbkCode != null) {
         _buffer[targetIndex++] = (gbkCode >> 8) & 0xff;
         _buffer[targetIndex++] = gbkCode & 0xff;
@@ -175,7 +175,7 @@ class _GbkEncoderSink with StringConversionSinkMixin {
 
   @override
   void addSlice(String input, int start, int end, bool isLast) {
-    int index = _encoder.encode(input, start, end);
+    var index = _encoder.encode(input, start, end);
     _sink.addSlice(_encoder._buffer, 0, index, isLast);
 
     if (isLast) close();
@@ -212,7 +212,7 @@ class GbkDecoder extends Converter<List<int>, String> {
     end = RangeError.checkValidRange(start, end, length);
 
     // Fast case for ASCII strings avoids StringBuffer / decodeMap.
-    int oneBytes = _scanOneByteCharacters(codeUnits, start, end);
+    var oneBytes = _scanOneByteCharacters(codeUnits, start, end);
     StringBuffer buffer;
     if (oneBytes > 0) {
       var firstPart = String.fromCharCodes(codeUnits, start, start + oneBytes);
@@ -234,6 +234,7 @@ class GbkDecoder extends Converter<List<int>, String> {
   ///
   /// The converter works more efficiently if the given [sink] is a
   /// [StringConversionSink].
+  @override
   ByteConversionSink startChunkedConversion(Sink<String> sink) {
     StringConversionSink stringSink;
     if (sink is StringConversionSink) {
@@ -246,6 +247,7 @@ class GbkDecoder extends Converter<List<int>, String> {
   }
 
   // Override the base-classes bind, to provide a better type.
+  @override
   Stream<String> bind(Stream<List<int>> stream) {
     return super.bind(stream);
   }
@@ -267,6 +269,7 @@ class _GbkConversionSink extends ByteConversionSink {
       : _decoder = _GbkStreamDecoder(stringBuffer, allowMalformed),
         _buffer = stringBuffer;
 
+  @override
   void close() {
     _decoder.close();
     if (_buffer.isNotEmpty) {
@@ -278,10 +281,12 @@ class _GbkConversionSink extends ByteConversionSink {
     }
   }
 
+  @override
   void add(List<int> chunk) {
     addSlice(chunk, 0, chunk.length, false);
   }
 
+  @override
   void addSlice(List<int> chunk, int startIndex, int endIndex, bool isLast) {
     _decoder.convert(chunk, startIndex, endIndex);
     if (_buffer.isNotEmpty) {
@@ -308,7 +313,7 @@ class _GbkStreamDecoder {
   final StringSink _stringSink;
 
   // GBK need 2 bytes, if only 1 byte received, store here.
-  int _firstByte = -1;
+  var _firstByte = -1;
 
   bool get hasPartialInput => _firstByte > -1;
 
@@ -328,7 +333,7 @@ class _GbkStreamDecoder {
   void flush([List<int> source, int offset]) {
     if (hasPartialInput) {
       if (!_allowMalformed) {
-        throw FormatException("Unfinished GBK octet sequence", source, offset);
+        throw FormatException('Unfinished GBK octet sequence', source, offset);
       }
       _stringSink.writeCharCode(unicodeReplacementCharacterRune);
       _firstByte = -1;
@@ -336,14 +341,14 @@ class _GbkStreamDecoder {
   }
 
   void convert(List<int> codeUnits, int startIndex, int endIndex) {
-    int begin = startIndex;
+    var begin = startIndex;
     // if _firstByte > 0, we need to finish last time's job first.
     if (hasPartialInput) {
-      int code = ((_firstByte) << 8) + (codeUnits[0] & 0xff);
-      int char = gbkToUtf16Map[code];
+      var code = ((_firstByte) << 8) + (codeUnits[0] & 0xff);
+      var char = gbkToUtf16Map[code];
       if (char == null && !_allowMalformed) {
         throw FormatException(
-            "Bad GBK encoding 0x${code.toRadixString(16)}", code);
+            'Bad GBK encoding 0x${code.toRadixString(16)}', code);
       }
       if (char != null) {
         _stringSink.write(String.fromCharCode(char));
@@ -355,8 +360,8 @@ class _GbkStreamDecoder {
     }
 
     // handle new incoming data.
-    for (int index = begin; index < endIndex; index++) {
-      int code = codeUnits[index];
+    for (var index = begin; index < endIndex; index++) {
+      var code = codeUnits[index];
       if (_isAscii(codeUnits[index])) {
         _stringSink.writeCharCode(code);
       } else {
@@ -370,10 +375,10 @@ class _GbkStreamDecoder {
         if (code == unicodeBomCharacterRune) {
           continue;
         }
-        int char = gbkToUtf16Map[code];
+        var char = gbkToUtf16Map[code];
         if (char == null && !_allowMalformed) {
           throw FormatException(
-              "Bad GBK encoding 0x${code.toRadixString(16)}", code);
+              'Bad GBK encoding 0x${code.toRadixString(16)}', code);
         }
 
         if (char != null) {

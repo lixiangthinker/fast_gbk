@@ -1,3 +1,9 @@
+## 0.1.2+1
+fix lint errors.
+
+## 0.1.2
+fix lint errors.
+
 ## 0.1.1+1
 export GbkCodec so user could create an instance of GbkCodec with allowMalformed=true
 

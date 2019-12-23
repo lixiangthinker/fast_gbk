@@ -9,15 +9,15 @@ void main() {
     Dio testClient;
 
     setUp(() {
-      String baseUrl = "http://www.newsmth.net";
-      final String defaultAgent =
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) "
-          "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36";
-      const int secondsUnit = 1000;
-      final int connectTimeOut = 10 * secondsUnit;
-      final int receiveTimeOut = 15 * secondsUnit;
+      var baseUrl = 'http://www.newsmth.net';
+      final defaultAgent =
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) '
+          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36';
+      const secondsUnit = 1000;
+      final connectTimeOut = 10 * secondsUnit;
+      final receiveTimeOut = 15 * secondsUnit;
 
-      BaseOptions options = BaseOptions();
+      var options = BaseOptions();
       options.connectTimeout = connectTimeOut;
       options.receiveTimeout = receiveTimeOut;
       options.baseUrl = baseUrl;
@@ -25,9 +25,9 @@ void main() {
         HttpHeaders.userAgentHeader: defaultAgent,
       });
       options.responseDecoder = gbkDecoder;
-      Dio client = Dio(options);
+      var client = Dio(options);
       client.options.headers.addAll({
-        "X-Requested-With": "XMLHttpRequest",
+        'X-Requested-With': 'XMLHttpRequest',
       });
 
       testClient = client;
@@ -35,7 +35,7 @@ void main() {
 
     test('Get GBK Html response by dio client', () async {
       //gbk.decode cost 86ms, responseLength = 41333
-      String url = "/nForum/article/Tennis/1119045?ajax";
+      var url = '/nForum/article/Tennis/1119045?ajax';
       //gbk.decode cost 88ms, responseLength = 46345
       //String url = "/nForum/article/Shopping/105645?ajax";
       var response = await testClient.get<String>(url);
@@ -47,9 +47,9 @@ void main() {
 String gbkDecoder(List<int> responseBytes, RequestOptions options,
     ResponseBody responseBody) {
   var begin = DateTime.now().millisecondsSinceEpoch;
-  String result = gbk.decode(responseBytes);
+  var result = gbk.decode(responseBytes);
   var end = DateTime.now().millisecondsSinceEpoch;
   print(
-      "gbk.decode cost ${end - begin}ms, responseLength = ${responseBytes.length}");
+      'gbk.decode cost ${end - begin}ms, responseLength = ${responseBytes.length}');
   return result;
 }

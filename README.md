@@ -6,7 +6,7 @@ Created from templates made available by Stagehand under a BSD-style
 [license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
 
 ## version
-> fast_gbk: 0.1.x
+> fast_gbk: 0.1.2
 
 It is a initial version, which will pub to pub.dev when it is stable enough. 
 
@@ -73,7 +73,9 @@ void main() async {
 ## FAQ
 
 ### Q: support for malformed gbk characters.
+
 Q: when input string contains malformed GBK characters, we do not want to received a exception.
+
 A: 0.1.1+1 export GbkCodec api, users can use as follows:
 ```dart
   //output a �, instead of throw a exception.

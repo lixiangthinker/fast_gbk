@@ -10,36 +10,36 @@ void main() {
 
     test('simple encoder test', () async {
       //6625:B4BA
-      testEncode("春", [0xB4, 0xBA]);
+      testEncode('春', [0xB4, 0xBA]);
       //590F:CFC4
-      testEncode("夏", [0xCF, 0xC4]);
+      testEncode('夏', [0xCF, 0xC4]);
       //79CB：C7EF
-      testEncode("秋", [0xC7, 0xEF]);
+      testEncode('秋', [0xC7, 0xEF]);
       //51AC:B6AC
-      testEncode("冬", [0xB6, 0xAC]);
+      testEncode('冬', [0xB6, 0xAC]);
       //E7B3:A7F6 GBK error character
-      testEncode("", [0xA7, 0xF6]);
+      testEncode('', [0xA7, 0xF6]);
       //3010:A1BE
-      testEncode("【", [0xA1, 0xBE]);
+      testEncode('【', [0xA1, 0xBE]);
     });
 
     test('encoder test, only print values for test purpose.', () async {
-      String testString = "A";
-      print(testString + " " + testString.codeUnits.length.toString());
+      var testString = 'A';
+      print('$testString ${testString.codeUnits.length.toString()}');
       testString.codeUnits.forEach((codeUnit) {
         print(codeUnit.toRadixString(16));
       });
-      List<int> encoded = gbk.encode(testString);
-      print("\tGBK = [${codeUnitsToString(encoded)}");
+      var encoded = gbk.encode(testString);
+      print('\tGBK = [${codeUnitsToString(encoded)}');
     }, skip: true);
 
     test('simple decoder test', () async {
-      testDecode([0xB4, 0xBA], "春");
-      testDecode([0xCF, 0xC4], "夏");
-      testDecode([0xC7, 0xEF], "秋");
-      testDecode([0xB6, 0xAC], "冬");
-      testDecode([0xA7, 0xF6], "");
-      testDecode([0xA1, 0xBE], "【");
+      testDecode([0xB4, 0xBA], '春');
+      testDecode([0xCF, 0xC4], '夏');
+      testDecode([0xC7, 0xEF], '秋');
+      testDecode([0xB6, 0xAC], '冬');
+      testDecode([0xA7, 0xF6], '');
+      testDecode([0xA1, 0xBE], '【');
     });
 
 // need to add to map, following link not complete.
@@ -67,87 +67,87 @@ void main() {
 //    FE ０ １ ２ ３ ４ ５ ６ ７ ８ ９ Ａ Ｂ Ｃ Ｄ Ｅ Ｆ
 //    ５                
 //    ５                
-      printUtf16GbkPair("", "FE50");
-      printUtf16GbkPair("", "FE54");
-      printUtf16GbkPair("", "FE55");
-      printUtf16GbkPair("", "FE56");
-      printUtf16GbkPair("", "FE57");
-      printUtf16GbkPair("", "FE58");
-      printUtf16GbkPair("", "FE5A");
-      printUtf16GbkPair("", "FE5B");
-      printUtf16GbkPair("", "FE5C");
-      printUtf16GbkPair("", "FE5D");
-      printUtf16GbkPair("", "FE5E");
-      printUtf16GbkPair("", "FE5F");
+      printUtf16GbkPair('', 'FE50');
+      printUtf16GbkPair('', 'FE54');
+      printUtf16GbkPair('', 'FE55');
+      printUtf16GbkPair('', 'FE56');
+      printUtf16GbkPair('', 'FE57');
+      printUtf16GbkPair('', 'FE58');
+      printUtf16GbkPair('', 'FE5A');
+      printUtf16GbkPair('', 'FE5B');
+      printUtf16GbkPair('', 'FE5C');
+      printUtf16GbkPair('', 'FE5D');
+      printUtf16GbkPair('', 'FE5E');
+      printUtf16GbkPair('', 'FE5F');
 
 //    FE ０ １ ２ ３ ４ ５ ６ ７ ８ ９ Ａ Ｂ Ｃ Ｄ Ｅ Ｆ
 //    ６                
 //    ６                
-      printUtf16GbkPair("", "FE60");
-      printUtf16GbkPair("", "FE62");
-      printUtf16GbkPair("", "FE63");
-      printUtf16GbkPair("", "FE64");
-      printUtf16GbkPair("", "FE65");
-      printUtf16GbkPair("", "FE68");
-      printUtf16GbkPair("", "FE69");
-      printUtf16GbkPair("", "FE6A");
-      printUtf16GbkPair("", "FE6B");
-      printUtf16GbkPair("", "FE6E");
-      printUtf16GbkPair("", "FE6F");
+      printUtf16GbkPair('', 'FE60');
+      printUtf16GbkPair('', 'FE62');
+      printUtf16GbkPair('', 'FE63');
+      printUtf16GbkPair('', 'FE64');
+      printUtf16GbkPair('', 'FE65');
+      printUtf16GbkPair('', 'FE68');
+      printUtf16GbkPair('', 'FE69');
+      printUtf16GbkPair('', 'FE6A');
+      printUtf16GbkPair('', 'FE6B');
+      printUtf16GbkPair('', 'FE6E');
+      printUtf16GbkPair('', 'FE6F');
 //    FE ０ １ ２ ３ ４ ５ ６ ７ ８ ９ Ａ Ｂ Ｃ Ｄ Ｅ Ｆ
 //    ７               
 //    ７               
-      printUtf16GbkPair("", "FE70");
-      printUtf16GbkPair("", "FE71");
-      printUtf16GbkPair("", "FE72");
-      printUtf16GbkPair("", "FE73");
-      printUtf16GbkPair("", "FE74");
-      printUtf16GbkPair("", "FE75");
-      printUtf16GbkPair("", "FE77");
-      printUtf16GbkPair("", "FE78");
-      printUtf16GbkPair("", "FE79");
-      printUtf16GbkPair("", "FE7A");
-      printUtf16GbkPair("", "FE7B");
-      printUtf16GbkPair("", "FE7C");
-      printUtf16GbkPair("", "FE7D");
+      printUtf16GbkPair('', 'FE70');
+      printUtf16GbkPair('', 'FE71');
+      printUtf16GbkPair('', 'FE72');
+      printUtf16GbkPair('', 'FE73');
+      printUtf16GbkPair('', 'FE74');
+      printUtf16GbkPair('', 'FE75');
+      printUtf16GbkPair('', 'FE77');
+      printUtf16GbkPair('', 'FE78');
+      printUtf16GbkPair('', 'FE79');
+      printUtf16GbkPair('', 'FE7A');
+      printUtf16GbkPair('', 'FE7B');
+      printUtf16GbkPair('', 'FE7C');
+      printUtf16GbkPair('', 'FE7D');
 
 //    FE ０ １ ２ ３ ４ ５ ６ ７ ８ ９ Ａ Ｂ Ｃ Ｄ Ｅ Ｆ
 //    ８                
 //    ８                
-      printUtf16GbkPair("", "FE80");
-      printUtf16GbkPair("", "FE81");
-      printUtf16GbkPair("", "FE82");
-      printUtf16GbkPair("", "FE83");
-      printUtf16GbkPair("", "FE84");
-      printUtf16GbkPair("", "FE85");
-      printUtf16GbkPair("", "FE86");
-      printUtf16GbkPair("", "FE87");
-      printUtf16GbkPair("", "FE88");
-      printUtf16GbkPair("", "FE89");
-      printUtf16GbkPair("", "FE8A");
-      printUtf16GbkPair("", "FE8B");
-      printUtf16GbkPair("", "FE8C");
-      printUtf16GbkPair("", "FE8D");
-      printUtf16GbkPair("", "FE8E");
-      printUtf16GbkPair("", "FE8F");
+      printUtf16GbkPair('', 'FE80');
+      printUtf16GbkPair('', 'FE81');
+      printUtf16GbkPair('', 'FE82');
+      printUtf16GbkPair('', 'FE83');
+      printUtf16GbkPair('', 'FE84');
+      printUtf16GbkPair('', 'FE85');
+      printUtf16GbkPair('', 'FE86');
+      printUtf16GbkPair('', 'FE87');
+      printUtf16GbkPair('', 'FE88');
+      printUtf16GbkPair('', 'FE89');
+      printUtf16GbkPair('', 'FE8A');
+      printUtf16GbkPair('', 'FE8B');
+      printUtf16GbkPair('', 'FE8C');
+      printUtf16GbkPair('', 'FE8D');
+      printUtf16GbkPair('', 'FE8E');
+      printUtf16GbkPair('', 'FE8F');
 
 //    FE ０ １ ２ ３ ４ ５ ６ ７ ８ ９ Ａ Ｂ Ｃ Ｄ Ｅ Ｆ
 //    ９                
 //    ９                
-      printUtf16GbkPair("", "FE92");
-      printUtf16GbkPair("", "FE93");
-      printUtf16GbkPair("", "FE94");
-      printUtf16GbkPair("", "FE95");
-      printUtf16GbkPair("", "FE96");
-      printUtf16GbkPair("", "FE97");
-      printUtf16GbkPair("", "FE98");
-      printUtf16GbkPair("", "FE99");
-      printUtf16GbkPair("", "FE9A");
-      printUtf16GbkPair("", "FE9B");
-      printUtf16GbkPair("", "FE9C");
-      printUtf16GbkPair("", "FE9D");
-      printUtf16GbkPair("", "FE9E");
-      printUtf16GbkPair("", "FE9F");
+      printUtf16GbkPair('', 'FE92');
+      printUtf16GbkPair('', 'FE93');
+      printUtf16GbkPair('', 'FE94');
+      printUtf16GbkPair('', 'FE95');
+      printUtf16GbkPair('', 'FE96');
+      printUtf16GbkPair('', 'FE97');
+      printUtf16GbkPair('', 'FE98');
+      printUtf16GbkPair('', 'FE99');
+      printUtf16GbkPair('', 'FE9A');
+      printUtf16GbkPair('', 'FE9B');
+      printUtf16GbkPair('', 'FE9C');
+      printUtf16GbkPair('', 'FE9D');
+      printUtf16GbkPair('', 'FE9E');
+      printUtf16GbkPair('', 'FE9F');
     });
 
     test('simple decoder test', () async {
@@ -297,45 +297,45 @@ void main() {
 }
 
 void printUtf16GbkPair(String string, String GbkCode) {
-  List<int> codeUnits = string.codeUnits;
-  print("${codeUnits[0].toRadixString(16)}:$GbkCode");
+  var codeUnits = string.codeUnits;
+  print('${codeUnits[0].toRadixString(16)}:$GbkCode');
 }
 
 void testOnlyPrint(String input) {
-  String testString = input;
+  var testString = input;
   print(
-      "String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}");
-  List<int> encoded = gbk.encode(testString);
-  print("\tGBK = [${codeUnitsToString(encoded)}");
+      'String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}');
+  var encoded = gbk.encode(testString);
+  print('\tGBK = [${codeUnitsToString(encoded)}');
 }
 
 void testEncode(String input, List<int> expectResult) {
-  String testString = input;
+  var testString = input;
   print(
-      "String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}");
-  List<int> encoded = gbk.encode(testString);
+      'String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}');
+  var encoded = gbk.encode(testString);
 
   expect(encoded.length, 2);
   expect(encoded.length, expectResult.length);
-  for (int i = 0; i < encoded.length; i++) {
+  for (var i = 0; i < encoded.length; i++) {
     expect(encoded[i], expectResult[i]);
   }
 
-  print("\tGBK = ${codeUnitsToString(encoded)}");
+  print('\tGBK = ${codeUnitsToString(encoded)}');
 }
 
 String codeUnitsToString(List<int> codeUnits) {
-  StringBuffer sb = StringBuffer("[");
+  var sb = StringBuffer('[');
   codeUnits.forEach((codeUnit) {
-    sb.write("0x" + codeUnit.toRadixString(16) + ",");
+    sb.write('0x' + codeUnit.toRadixString(16) + ',');
   });
-  sb.write("]");
+  sb.write(']');
   return sb.toString();
 }
 
 void testDecode(List<int> inputList, String expectResult) {
-  print("GBK = ${codeUnitsToString(inputList)}");
-  String decoded = gbk.decode(inputList);
+  print('GBK = ${codeUnitsToString(inputList)}');
+  var decoded = gbk.decode(inputList);
   expect(decoded, expectResult);
-  print("\tString = $decoded");
+  print('\tString = $decoded');
 }
