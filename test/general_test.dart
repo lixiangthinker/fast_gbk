@@ -304,7 +304,7 @@ void printUtf16GbkPair(String string, String GbkCode) {
 void testOnlyPrint(String input) {
   var testString = input;
   print(
-      'String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}');
+      'String = $testString\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}');
   var encoded = gbk.encode(testString);
   print('\tGBK = [${codeUnitsToString(encoded)}');
 }
@@ -312,7 +312,7 @@ void testOnlyPrint(String input) {
 void testEncode(String input, List<int> expectResult) {
   var testString = input;
   print(
-      'String = ${testString}\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}');
+      'String = $testString\n\tUTF-16 = ${codeUnitsToString(testString.codeUnits)}');
   var encoded = gbk.encode(testString);
 
   expect(encoded.length, 2);

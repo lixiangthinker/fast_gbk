@@ -56,7 +56,7 @@ class GbkCodec extends Encoding {
   /// If [allowMalformed] is not given, it defaults to the `allowMalformed` that
   /// was used to instantiate `this`.
   @override
-  String decode(List<int> codeUnits, {bool allowMalformed}) {
+  String decode(List<int> codeUnits, {bool? allowMalformed}) {
     allowMalformed ??= _allowMalformed;
     return GbkDecoder(allowMalformed: allowMalformed).convert(codeUnits);
   }
@@ -81,7 +81,7 @@ class GbkEncoder extends Converter<String, List<int>> {
   /// If [start] and [end] are provided, only the substring
   /// `string.substring(start, end)` is converted.
   @override
-  Uint8List convert(String string, [int start = 0, int end]) {
+  Uint8List convert(String string, [int start = 0, int? end]) {
     var stringLength = string.length;
     end = RangeError.checkValidRange(start, end, stringLength);
     var length = end - start;
@@ -207,13 +207,13 @@ class GbkDecoder extends Converter<List<int>, String> {
   /// If the [codeUnits] start with the encoding of a
   /// [unicodeBomCharacterRune], that character is discarded.
   @override
-  String convert(List<int> codeUnits, [int start = 0, int end]) {
+  String convert(List<int> codeUnits, [int start = 0, int? end]) {
     var length = codeUnits.length;
     end = RangeError.checkValidRange(start, end, length);
 
     // Fast case for ASCII strings avoids StringBuffer / decodeMap.
     var oneBytes = _scanOneByteCharacters(codeUnits, start, end);
-    StringBuffer buffer;
+    StringBuffer? buffer;
     if (oneBytes > 0) {
       var firstPart = String.fromCharCodes(codeUnits, start, start + oneBytes);
       start += oneBytes;
@@ -330,7 +330,7 @@ class _GbkStreamDecoder {
   ///
   /// The [source] and [offset] of the current position may be provided,
   /// and are included in the exception if one is thrown.
-  void flush([List<int> source, int offset]) {
+  void flush([List<int>? source, int? offset]) {
     if (hasPartialInput) {
       if (!_allowMalformed) {
         throw FormatException('Unfinished GBK octet sequence', source, offset);

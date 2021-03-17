@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:fast_gbk/fast_gbk.dart';
 import 'package:test/test.dart';
 
@@ -29,7 +28,7 @@ void main() {
       var content = testFile2.readAsStringSync(encoding: gbk);
 
       var begin = DateTime.now().millisecondsSinceEpoch;
-      Uint8List encoded = gbk.encode(content);
+      var encoded = gbk.encode(content);
       var end = DateTime.now().millisecondsSinceEpoch;
       print(
           'gbk.encode cost ${end - begin}ms, string length = ${content.length}');
