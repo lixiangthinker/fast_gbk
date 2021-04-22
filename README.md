@@ -6,9 +6,7 @@ Created from templates made available by Stagehand under a BSD-style
 [license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
 
 ## version
-> fast_gbk: 0.1.2
-
-It is a initial version, which will pub to pub.dev when it is stable enough. 
+> fast_gbk: 1.0.0
 
 ## Usage
 
@@ -82,6 +80,9 @@ A: 0.1.1+1 export GbkCodec api, users can use as follows:
   var codec = GbkCodec(allowMalformed: true);
   var decodedMalform = codec.decode([20001]);
 ```
+
+Q: null safety support?
+A: 1.0.0 version supports null safety.
 
 ## Features and bugs
 

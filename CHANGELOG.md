@@ -1,3 +1,6 @@
+## 1.0.0-rc
+null safety support.
+
 ## 0.1.2+1
 fix lint errors.
 
