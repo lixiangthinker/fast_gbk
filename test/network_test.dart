@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('A group of tests', () {
-    Dio testClient;
+    Dio? testClient;
 
     setUp(() {
       var baseUrl = 'http://www.newsmth.net';
@@ -38,8 +38,8 @@ void main() {
       var url = '/nForum/article/Tennis/1119045?ajax';
       //gbk.decode cost 88ms, responseLength = 46345
       //String url = "/nForum/article/Shopping/105645?ajax";
-      var response = await testClient.get<String>(url);
-      print(response.data);
+      var response = await testClient?.get<String>(url);
+      print(response?.data);
     }, skip: false);
   });
 }

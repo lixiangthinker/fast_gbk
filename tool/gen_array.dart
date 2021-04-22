@@ -4,30 +4,31 @@ import 'dart:io';
 /// Generate map for gbk encoder and decoder.
 ///
 void main() async {
-  File unicode2GBK = File("gbkuni30.txt");
-  List<String> charsetGBK = unicode2GBK.readAsLinesSync();
+  var unicode2GBK = File('gbkuni30.txt');
+  var charsetGBK = unicode2GBK.readAsLinesSync();
 
   //String class is using utf-16 (1 bytes, 2 bytes or 3 bytes),
   //GBK is 2 bytes in general, only ASCII using 1 bytes.
 
-  Map<int, int> utf16ToGBKMap = {};
-  Map<int, int> gbkToUtf16Map = {};
+  var utf16ToGBKMap = <int, int>{};
+  var gbkToUtf16Map = <int, int>{};
 
   charsetGBK.forEach((line) {
     //print(line);
-    if (line.startsWith("//")) {
+    if (line.startsWith('//')) {
       //comment line;
     } else {
-      List<String> segments = line.split(":");
+      var segments = line.split(':');
       var key = int.parse(segments[0], radix: 16);
       var value = int.parse(segments[1], radix: 16);
       if (value < 0x80) return;
 
       utf16ToGBKMap[key] = value;
       if (gbkToUtf16Map.containsKey(value)) {
-        print("{GBK, UTF-16, UTF-16}  [0x${value.toRadixString(16)}, "
-            "0x${gbkToUtf16Map[value].toRadixString(16)}, "
-            "0x${key.toRadixString(16)}, ${String.fromCharCode(gbkToUtf16Map[value])}, ${String.fromCharCode(key)}]");
+        print('{GBK, UTF-16, UTF-16}  [0x${value.toRadixString(16)}, '
+            '0x${gbkToUtf16Map[value]?.toRadixString(16)}, '
+            '0x${key.toRadixString(16)}, ${String.fromCharCode
+          (gbkToUtf16Map[value]??0)}, ${String.fromCharCode(key)}]');
 //        print("gbkToUtf16Map new [0x${value.toRadixString(16)}, 0x${key.toRadixString(16)}]");
       } else {
         gbkToUtf16Map[value] = key;
@@ -35,31 +36,31 @@ void main() async {
     }
   });
 
-  print("utf16ToGBKMap.length = ${utf16ToGBKMap.length}");
-  print("gbkToUtf16Map.length = ${gbkToUtf16Map.length}");
+  print('utf16ToGBKMap.length = ${utf16ToGBKMap.length}');
+  print('gbkToUtf16Map.length = ${gbkToUtf16Map.length}');
 
   //gbk_decoder_map.dart
-  File decodeMap = File("gbk_decoder_map.dart");
+  var decodeMap = File('gbk_decoder_map.dart');
   if (await decodeMap.exists()) await decodeMap.delete();
-  decodeMap.writeAsStringSync("Map<int, int> gbkToUtf16Map = \n",
+  decodeMap.writeAsStringSync('Map<int, int> gbkToUtf16Map = \n',
       mode: FileMode.append);
-  decodeMap.writeAsStringSync("{ \n", mode: FileMode.append);
+  decodeMap.writeAsStringSync('{ \n', mode: FileMode.append);
   gbkToUtf16Map.forEach((key, value) {
-    decodeMap.writeAsStringSync("  $key:$value, \n", mode: FileMode.append);
+    decodeMap.writeAsStringSync('  $key:$value, \n', mode: FileMode.append);
   });
-  decodeMap.writeAsStringSync("};", mode: FileMode.append);
+  decodeMap.writeAsStringSync('};', mode: FileMode.append);
 
   //gbk_encoder_map.dart
-  File encoderMap = File("gbk_encoder_map.dart");
+  var encoderMap = File('gbk_encoder_map.dart');
   if (await encoderMap.exists()) await encoderMap.delete();
-  encoderMap.writeAsStringSync("Map<int, int> utf16ToGBKMap = \n",
+  encoderMap.writeAsStringSync('Map<int, int> utf16ToGBKMap = \n',
       mode: FileMode.append);
-  encoderMap.writeAsStringSync("{ \n", mode: FileMode.append);
+  encoderMap.writeAsStringSync('{ \n', mode: FileMode.append);
 
   utf16ToGBKMap.forEach((key, value) {
-    encoderMap.writeAsStringSync("  $key:$value, \n", mode: FileMode.append);
+    encoderMap.writeAsStringSync('  $key:$value, \n', mode: FileMode.append);
   });
-  encoderMap.writeAsStringSync("};", mode: FileMode.append);
+  encoderMap.writeAsStringSync('};', mode: FileMode.append);
 }
 
 ///
