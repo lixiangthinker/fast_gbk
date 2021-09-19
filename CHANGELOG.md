@@ -1,3 +1,6 @@
+## 1.0.0
+change to release version number.
+
 ## 1.0.0-rc
 null safety support.
 
